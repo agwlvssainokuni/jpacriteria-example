@@ -20,15 +20,6 @@ tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
-sourceSets {
-    entity
-    entitymodel {
-        java {
-            srcDir file("build/generated/sources/annotationProcessor/java/entity")
-        }
-    }
-}
-
 repositories {
     mavenCentral()
 }
@@ -48,16 +39,50 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// エンティティとJPAメタモデルは、別々のソースセットにした方が良さげ。
+// ・コンパイルが通らないとエンティティからJPAメタモデルを生成できない。
+// 　=>使う側のプログラムと同居させると「JPAメタモデルを生成できない」
+// 　　という問題が顕在化する。
+// 　=>使う側のプログラムの前にJPAメタモデルを生成しておく必要がある。
+// 　=>別プロジェクトまたは別ソースセットにする必要がある。
+// ・エンティティをコンパイルするとhibernate-jpamodelgenがJPAメタ
+// 　モデルのクラスファイルを (エンティティのクラスファイルと) 同じ
+// 　ディレクトリに生成する。
+// 　=>生成したJPAメタモデルのJavaソースをエンティティと同じソース
+// 　　ディレクトリに配置すると、ツールが生成するクラスファイルと、
+// 　　Javaソースをコンパイルしたクラスファイルが競合してコンパイル
+// 　　エラーになる。(annotationProcessorのエラーになる)
+// 　=>生成したJPAメタモデルのJavaソースがなくても、Gradleのビルド
+// 　　は通る。
+// ・生成したJPAモデルのJavaソースがないと、IntelliJ IDEAでエラー
+// 　と判定される。
+// 　=>生成したJavaソースを参照する形でソースセットを定義しておく必要
+// 　　がある。(最低限JPAメタモデルのJavaソースをコンパイルができる
+// 　　ようにはしておく)
+
+sourceSets {
+    entity
+    entitymodel {
+        java {
+            srcDir file("build/generated/sources/annotationProcessor/java/entity")
+        }
+    }
+}
+
+dependencies {
+    // エンティティからJPAメタモデルを生成するための設定。
     entityCompileOnly 'jakarta.persistence:jakarta.persistence-api'
     entityCompileOnly 'org.projectlombok:lombok:1.18.34'
     entityAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
     entityAnnotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
-
+    // JPAメタモデルのJavaソースをコンパイルできるようにする設定。
+    // (IntelliJ IDEAのために必要)
     entitymodelCompileOnly 'jakarta.persistence:jakarta.persistence-api'
     entitymodelCompileOnly sourceSets.entity.output
-
+    // 使う側のプログラムがエンティティとJPAメタモデルを参照する設定。
     implementation sourceSets.entity.output
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
