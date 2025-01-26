@@ -7,20 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.math.BigDecimal;
 
 @Component
-public class Runner implements ApplicationRunner, ExitCodeGenerator {
+public class Runner implements ApplicationRunner {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final CountDownLatch latch = new CountDownLatch(1);
-    private final AtomicInteger exitCode = new AtomicInteger(0);
 
     private final EntityManager em;
 
@@ -68,6 +63,22 @@ public class Runner implements ApplicationRunner, ExitCodeGenerator {
         salesOrder3.setStatus(SalesOrderStatus.SHIPPED);
         em.persist(salesOrder3);
         em.persist(SalesOrderHistory.from(salesOrder3));
+
+        var salesOrder4 = new SalesOrder();
+        salesOrder4.setCustomer(customer);
+        salesOrder4.setStatus(SalesOrderStatus.NEW);
+        em.persist(salesOrder4);
+        em.persist(SalesOrderHistory.from(salesOrder4));
+        var salesOrderItem41 = new SalesOrderItem();
+        salesOrderItem41.setSalesOrder(salesOrder4);
+        salesOrderItem41.setUnitPrice(BigDecimal.valueOf(98765));
+        salesOrderItem41.setQuantity(9L);
+        em.persist(salesOrderItem41);
+        var salesOrderItem42 = new SalesOrderItem();
+        salesOrderItem42.setSalesOrder(salesOrder4);
+        salesOrderItem42.setUnitPrice(BigDecimal.valueOf(43210));
+        salesOrderItem42.setQuantity(23L);
+        em.persist(salesOrderItem42);
 
         em.flush();
         em.clear();
@@ -188,21 +199,25 @@ public class Runner implements ApplicationRunner, ExitCodeGenerator {
             });
         }
 
-        setExitCode(0);
-    }
+        var query6 = cb.createTupleQuery();
+        var so6 = query6.from(SalesOrder.class);
+        var soi6 = so6.join(SalesOrder_.item, JoinType.LEFT);
+        query6.groupBy(so6);
 
-    private void setExitCode(int code) {
-        exitCode.set(code);
-        latch.countDown();
-    }
+        var amountExpr = cb.sum(
+                cb.prod(soi6.get(SalesOrderItem_.unitPrice), soi6.get(SalesOrderItem_.quantity))
+        );
+        query6.multiselect(so6, amountExpr);
 
-    @Override
-    public int getExitCode() {
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            // 何もしない
+        try (var result = em.createQuery(query6).getResultStream()) {
+            result.forEach(tuple -> {
+                var so = tuple.get(so6);
+                var amount = tuple.get(amountExpr);
+                logger.info("SalesOrder: %d %s, amount: %s".formatted(
+                        so.getId(), so.getStatus(),
+                        amount
+                ));
+            });
         }
-        return exitCode.get();
     }
 }
