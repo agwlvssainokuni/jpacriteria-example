@@ -22,69 +22,126 @@ public class Runner implements ApplicationRunner, ExitCodeGenerator {
     private final CountDownLatch latch = new CountDownLatch(1);
     private final AtomicInteger exitCode = new AtomicInteger(0);
 
-    private final EntityManager entityManager;
+    private final EntityManager em;
 
     public Runner(
-            EntityManager entityManager
+            EntityManager em
     ) {
-        this.entityManager = entityManager;
+        this.em = em;
     }
 
     @Transactional
     @Override
     public void run(ApplicationArguments args) {
 
-        var c = new Customer();
-        c.setFirstName("FirstName");
-        c.setLastName("LastName");
-        entityManager.persist(c);
+        var customer = new Customer();
+        customer.setFirstName("FirstName");
+        customer.setLastName("LastName");
+        em.persist(customer);
 
-        var s1 = new SalesOrder();
-        s1.setCustomer(c);
-        s1.setStatus(SalesOrderStatus.NEW);
-        entityManager.persist(s1);
+        var salesOrder1 = new SalesOrder();
+        salesOrder1.setCustomer(customer);
+        salesOrder1.setStatus(SalesOrderStatus.NEW);
+        em.persist(salesOrder1);
 
-        var s2 = new SalesOrder();
-        s2.setCustomer(c);
-        s2.setStatus(SalesOrderStatus.APPROVED);
-        entityManager.persist(s2);
+        var salesOrder2 = new SalesOrder();
+        salesOrder2.setCustomer(customer);
+        salesOrder2.setStatus(SalesOrderStatus.APPROVED);
+        em.persist(salesOrder2);
 
-        entityManager.flush();
-        entityManager.clear();
+        em.flush();
+        em.clear();
 
-        var builder = entityManager.getCriteriaBuilder();
-        var criteria1 = builder.createQuery(Customer.class);
+        var cb = em.getCriteriaBuilder();
 
-        var root1 = criteria1.from(Customer.class);
-        root1.fetch(Customer_.salesOrder, JoinType.LEFT);
+        var criteria1 = cb.createQuery(SalesOrder.class);
+        var root1 = criteria1.from(SalesOrder.class);
+        root1.fetch(SalesOrder_.customer);
+
         criteria1.select(root1);
 
-        try (var result1 = entityManager.createQuery(criteria1).getResultStream()) {
-            result1.forEach(cust -> {
-                logger.info("Customer: %d %s %s".formatted(cust.getId(), cust.getFirstName(), cust.getLastName()));
-                cust.getSalesOrder().forEach(order -> {
-                    logger.info("    SalesOrder: %d %s".formatted(order.getId(), order.getStatus()));
-                });
-            });
-        }
-
-        var criteria2 = builder.createQuery(SalesOrder.class);
-        var root2 = criteria2.from(SalesOrder.class);
-        root2.fetch(SalesOrder_.customer);
-
-        criteria2.select(root2);
-        criteria2.where(
-                builder.equal(
-                        root2.get(SalesOrder_.status),
-                        SalesOrderStatus.APPROVED
-                ).not()
-        );
-
-        try (var result2 = entityManager.createQuery(criteria2).getResultStream()) {
-            result2.forEach(so -> {
+        try (var result = em.createQuery(criteria1).getResultStream()) {
+            result.forEach(so -> {
                 logger.info("SalesOrder: %d %s, Customer: %d %s %s".formatted(
                         so.getId(), so.getStatus(),
                         so.getCustomer().getId(), so.getCustomer().getFirstName(), so.getCustomer().getLastName()
+                ));
+            });
+        }
+
+        var criteria2 = cb.createQuery(SalesOrder.class);
+        var root2 = criteria2.from(SalesOrder.class);
+        root2.fetch(SalesOrder_.customer);
+
+        criteria2.where(
+                cb.not(cb.equal(
+                        root2.get(SalesOrder_.status),
+                        SalesOrderStatus.NEW
+                ))
+        );
+
+        criteria2.select(root2);
+
+        try (var result = em.createQuery(criteria2).getResultStream()) {
+            result.forEach(so -> {
+                logger.info("SalesOrder: %d %s, Customer: %d %s %s".formatted(
+                        so.getId(), so.getStatus(),
+                        so.getCustomer().getId(), so.getCustomer().getFirstName(), so.getCustomer().getLastName()
+                ));
+            });
+        }
+
+        var criteria3 = cb.createTupleQuery();
+        var root3 = criteria3.from(SalesOrder.class);
+        var join3 = root3.join(SalesOrder_.customer, JoinType.LEFT);
+
+        criteria3.where(
+                cb.equal(
+                        root3.get(SalesOrder_.status),
+                        SalesOrderStatus.NEW
+                )
+        );
+
+        criteria3.multiselect(root3, join3);
+
+        try (var result = em.createQuery(criteria3).getResultStream()) {
+            result.forEach(tuple -> {
+                var so = tuple.get(root3);
+                var cust = tuple.get(join3);
+                logger.info("SalesOrder: %d %s, Customer: %d %s %s".formatted(
+                        so.getId(), so.getStatus(),
+                        cust.getId(), cust.getFirstName(), cust.getLastName()
+                ));
+            });
+        }
+
+        var criteria4 = cb.createTupleQuery();
+        var root4 = criteria4.from(SalesOrder.class);
+        var join4 = root4.join(SalesOrder_.customer, JoinType.LEFT);
+
+        criteria4.where(
+                cb.equal(
+                        root4.get(SalesOrder_.status),
+                        SalesOrderStatus.NEW
+                )
+        );
+
+        criteria4.multiselect(
+                root4.get(SalesOrder_.id),
+                root4.get(SalesOrder_.status),
+                join4.get(Customer_.id),
+                join4.get(Customer_.firstName),
+                join4.get(Customer_.lastName)
+        );
+
+        try (var result = em.createQuery(criteria4).getResultStream()) {
+            result.forEach(tuple -> {
+                logger.info("SalesOrder: %d %s, Customer: %d %s %s".formatted(
+                        tuple.get(root4.get(SalesOrder_.id)),
+                        tuple.get(root4.get(SalesOrder_.status)),
+                        tuple.get(join4.get(Customer_.id)),
+                        tuple.get(join4.get(Customer_.firstName)),
+                        tuple.get(join4.get(Customer_.lastName))
                 ));
             });
         }

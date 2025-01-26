@@ -1,10 +1,10 @@
 package com.example.db.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
-import lombok.ToString;
-
-import java.util.List;
 
 @Entity
 @Data
@@ -17,8 +17,4 @@ public class Customer {
     private String firstName;
 
     private String lastName;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "customer")
-    private List<SalesOrder> salesOrder;
 }
