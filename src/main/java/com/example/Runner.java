@@ -3,6 +3,9 @@ package com.example;
 import com.example.db.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Selection;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.sqm.TemporalUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -11,6 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.stream.LongStream;
 
 @Component
 public class Runner implements ApplicationRunner {
@@ -35,6 +41,7 @@ public class Runner implements ApplicationRunner {
         example004();
         example005();
         example006();
+        example007();
     }
 
     private void prepare() {
@@ -263,5 +270,28 @@ public class Runner implements ApplicationRunner {
                 ));
             });
         }
+    }
+
+    public void example007() {
+        logger.info("Example007 SQL関数");
+
+        var cb = em.getCriteriaBuilder();
+        var hcb = Optional.of(cb)
+                .filter(HibernateCriteriaBuilder.class::isInstance).map(HibernateCriteriaBuilder.class::cast)
+                .get();
+
+        var query7 = cb.createTupleQuery();
+        var selection = LongStream.range(-12, 13).mapToObj(duration ->
+                hcb.addDuration(
+                        hcb.currentTimestamp().as(LocalDateTime.class),
+                        hcb.duration(duration, TemporalUnit.MONTH)
+                )
+        ).toList();
+        query7.multiselect(selection.toArray(Selection[]::new));
+
+        var result = em.createQuery(query7).getSingleResult();
+        selection.stream()
+                .map(result::get).map(LocalDateTime::toString)
+                .forEach(logger::info);
     }
 }
