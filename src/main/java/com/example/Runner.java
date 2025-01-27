@@ -28,6 +28,16 @@ public class Runner implements ApplicationRunner {
     @Transactional
     @Override
     public void run(ApplicationArguments args) {
+        prepare();
+        example001();
+        example002();
+        example003();
+        example004();
+        example005();
+        example006();
+    }
+
+    private void prepare() {
 
         var customer = new Customer();
         customer.setFirstName("FirstName");
@@ -82,6 +92,10 @@ public class Runner implements ApplicationRunner {
 
         em.flush();
         em.clear();
+    }
+
+    private void example001() {
+        logger.info("Example001 単純な全件検索");
 
         var cb = em.getCriteriaBuilder();
 
@@ -99,6 +113,12 @@ public class Runner implements ApplicationRunner {
                 ));
             });
         }
+    }
+
+    private void example002() {
+        logger.info("Example002 条件を指定して検索");
+
+        var cb = em.getCriteriaBuilder();
 
         var query2 = cb.createQuery(SalesOrder.class);
         var so2 = query2.from(SalesOrder.class);
@@ -121,6 +141,12 @@ public class Runner implements ApplicationRunner {
                 ));
             });
         }
+    }
+
+    private void example003() {
+        logger.info("Example003 JOINしてEntityをmultiselect");
+
+        var cb = em.getCriteriaBuilder();
 
         var query3 = cb.createTupleQuery();
         var so3 = query3.from(SalesOrder.class);
@@ -145,6 +171,12 @@ public class Runner implements ApplicationRunner {
                 ));
             });
         }
+    }
+
+    private void example004() {
+        logger.info("Example004 JOINして各カラムをmultiselect");
+
+        var cb = em.getCriteriaBuilder();
 
         var query4 = cb.createTupleQuery();
         var so4 = query4.from(SalesOrder.class);
@@ -176,6 +208,12 @@ public class Runner implements ApplicationRunner {
                 ));
             });
         }
+    }
+
+    private void example005() {
+        logger.info("Example005 履歴テーブルから各組の最新を取得(NOT EXISTS)");
+
+        var cb = em.getCriteriaBuilder();
 
         var query5 = cb.createQuery(SalesOrderHistory.class);
         var soh5 = query5.from(SalesOrderHistory.class);
@@ -198,6 +236,12 @@ public class Runner implements ApplicationRunner {
                 ));
             });
         }
+    }
+
+    private void example006() {
+        logger.info("Example006 GROUP BYして集約関数(SUM)");
+
+        var cb = em.getCriteriaBuilder();
 
         var query6 = cb.createTupleQuery();
         var so6 = query6.from(SalesOrder.class);
