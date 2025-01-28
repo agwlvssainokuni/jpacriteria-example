@@ -42,6 +42,7 @@ public class Runner implements ApplicationRunner {
         example005();
         example006();
         example007();
+        example008();
     }
 
     private void prepare() {
@@ -276,20 +277,49 @@ public class Runner implements ApplicationRunner {
         logger.info("Example007 SQL関数");
 
         var cb = em.getCriteriaBuilder();
+
+        var query7 = cb.createTupleQuery();
+        var max = 120L;
+        var selection = LongStream.range(0, max + 1L).mapToObj(rad ->
+                cb.function("cos", Number.class,
+                        cb.prod(
+                                cb.quot(
+                                        cb.literal((double) rad),
+                                        cb.literal((double) max)
+                                ),
+                                cb.prod(
+                                        cb.function("pi", Number.class),
+                                        cb.literal(2)
+                                )
+                        )
+                )
+        ).toList();
+        query7.multiselect(selection.toArray(Selection[]::new));
+
+        var result = em.createQuery(query7).getSingleResult();
+        selection.stream()
+                .map(result::get).map(Number::toString)
+                .forEach(logger::info);
+    }
+
+    public void example008() {
+        logger.info("Example008 日時関数");
+
+        var cb = em.getCriteriaBuilder();
         var hcb = Optional.of(cb)
                 .filter(HibernateCriteriaBuilder.class::isInstance).map(HibernateCriteriaBuilder.class::cast)
                 .get();
 
-        var query7 = cb.createTupleQuery();
+        var query8 = cb.createTupleQuery();
         var selection = LongStream.range(-12, 13).mapToObj(duration ->
                 hcb.addDuration(
                         hcb.currentTimestamp().as(LocalDateTime.class),
                         hcb.duration(duration, TemporalUnit.MONTH)
                 )
         ).toList();
-        query7.multiselect(selection.toArray(Selection[]::new));
+        query8.multiselect(selection.toArray(Selection[]::new));
 
-        var result = em.createQuery(query7).getSingleResult();
+        var result = em.createQuery(query8).getSingleResult();
         selection.stream()
                 .map(result::get).map(LocalDateTime::toString)
                 .forEach(logger::info);
