@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Selection;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.sqm.TemporalUnit;
+import org.hibernate.query.sqm.tree.SqmJoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -43,6 +44,7 @@ public class Runner implements ApplicationRunner {
         example006();
         example007();
         example008();
+        example009();
     }
 
     private void prepare() {
@@ -303,7 +305,7 @@ public class Runner implements ApplicationRunner {
     }
 
     public void example008() {
-        logger.info("Example008 日時関数");
+        logger.info("Example008 日時関数 (Hibernate)");
 
         var cb = em.getCriteriaBuilder();
         var hcb = Optional.of(cb)
@@ -323,5 +325,39 @@ public class Runner implements ApplicationRunner {
         selection.stream()
                 .map(result::get).map(LocalDateTime::toString)
                 .forEach(logger::info);
+    }
+
+    private void example009() {
+        logger.info("Example009 プロパティを使わずにJOIN (Hibernate)");
+
+        var cb = em.getCriteriaBuilder();
+        var hcb = Optional.of(cb)
+                .filter(HibernateCriteriaBuilder.class::isInstance).map(HibernateCriteriaBuilder.class::cast)
+                .get();
+
+        var query9 = hcb.createTupleQuery();
+        var so9 = query9.from(SalesOrder.class);
+        var cu9 = so9.join(Customer.class, SqmJoinType.LEFT);
+//        cu9.on(cb.equal(
+//                cu9,
+//                so9.get(SalesOrder_.customer)
+//        ));
+        cu9.on(cb.equal(
+                cu9.get(Customer_.id),
+                so9.get(SalesOrder_.customer).get(Customer_.id)
+        ));
+
+        query9.multiselect(so9, cu9);
+
+        try (var result = em.createQuery(query9).getResultStream()) {
+            result.forEach(tuple -> {
+                var so = tuple.get(so9);
+                var cust = tuple.get(cu9);
+                logger.info("SalesOrder: %d %s, Customer: %d %s %s".formatted(
+                        so.getId(), so.getStatus(),
+                        cust.getId(), cust.getFirstName(), cust.getLastName()
+                ));
+            });
+        }
     }
 }
