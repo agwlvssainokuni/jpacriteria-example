@@ -26,15 +26,18 @@ public class Runner implements ApplicationRunner {
 
     private final PrepareExample prepareExample;
     private final BasicUsageExample basicUsageExample;
+    private final SelectClauseExample selectClauseExample;
     private final SandboxExample sandboxExample;
 
     public Runner(
             PrepareExample prepareExample,
             BasicUsageExample basicUsageExample,
+            SelectClauseExample selectClauseExample,
             SandboxExample sandboxExample
     ) {
         this.prepareExample = prepareExample;
         this.basicUsageExample = basicUsageExample;
+        this.selectClauseExample = selectClauseExample;
         this.sandboxExample = sandboxExample;
     }
 
@@ -43,6 +46,7 @@ public class Runner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         prepareExample.execute();
         basicUsageExample.execute();
+        selectClauseExample.execute();
         sandboxExample.execute();
     }
 }

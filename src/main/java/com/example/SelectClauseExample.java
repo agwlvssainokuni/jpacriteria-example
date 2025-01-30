@@ -1,0 +1,298 @@
+/*
+ * Copyright 2025 agwlvssainokuni
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example;
+
+import com.example.db.entity.Customer;
+import com.example.db.entity.Customer_;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+
+import static jakarta.persistence.criteria.CriteriaBuilder.Trimspec;
+
+@Service
+public class SelectClauseExample {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final EntityManager em;
+
+    public SelectClauseExample(EntityManager em) {
+        this.em = em;
+    }
+
+    @Transactional
+    public void execute() {
+        logger.info("2. SELECT句の書き方");
+        example01();
+        example02();
+        example03();
+        example04();
+        example05();
+        example06();
+    }
+
+    private void example01() {
+        logger.info("2.1 照会するカラムを指定する");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+        Root<Customer> cu = query.from(Customer.class);
+
+        // 取得するカラムを指定する。
+        query.multiselect(
+                cu.get(Customer_.id),
+                cu.get(Customer_.firstName),
+                cu.get(Customer_.lastName)
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("Customer: {} {} {}",
+                    r.get(cu.get(Customer_.id)),
+                    r.get(cu.get(Customer_.firstName)),
+                    r.get(cu.get(Customer_.lastName))
+            );
+        }
+    }
+
+    private void example02() {
+        logger.info("2.2 定数値を指定する");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+
+        // 取得するカラムを指定する。
+        var numInt = cb.literal(Integer.MAX_VALUE);
+        var numLong = cb.literal(Long.MAX_VALUE);
+        var numFloat = cb.literal(Float.MAX_VALUE * 0.999_999_97f);
+        var numDouble = cb.literal(Double.MAX_VALUE);
+        var numBigInteger = cb.literal(
+                BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(Long.MAX_VALUE))
+        );
+        var numBigDecimal = cb.literal(
+                BigDecimal.valueOf(Long.MAX_VALUE).multiply(BigDecimal.valueOf(Long.MAX_VALUE))
+                        .divide(BigDecimal.TEN.pow(20))
+        );
+        query.multiselect(
+                numInt,
+                numLong,
+                numFloat,
+                numDouble,
+                numBigInteger,
+                numBigDecimal
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("literal: {} {} {} {} {} {}",
+                    r.get(numInt),
+                    r.get(numLong),
+                    r.get(numFloat),
+                    r.get(numDouble),
+                    r.get(numBigInteger),
+                    r.get(numBigDecimal)
+            );
+        }
+    }
+
+    private void example03() {
+        logger.info("2.3 数値の加減乗除");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+
+        // 取得するカラムを指定する。
+        var numSum = cb.sum(
+                cb.literal(1_000_001),
+                cb.literal(1_000)
+        );
+        var numDiff = cb.diff(
+                cb.literal(1_000_001),
+                cb.literal(1_000)
+        );
+        var numProd = cb.prod(
+                cb.literal(1_000_001),
+                cb.literal(1_000)
+        );
+        var numQuot = cb.quot(
+                cb.literal(1_000_001),
+                cb.literal(1_000)
+        );
+        var numMod = cb.mod(
+                cb.literal(1_000_001),
+                cb.literal(1_000)
+        );
+        query.multiselect(
+                numSum,
+                numDiff,
+                numProd,
+                numQuot,
+                numMod
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("calc: {} {} {} {} {}",
+                    r.get(numSum),
+                    r.get(numDiff),
+                    r.get(numProd),
+                    r.get(numQuot),
+                    r.get(numMod)
+            );
+        }
+    }
+
+    private void example04() {
+        logger.info("2.4 数値関数");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+
+        // 取得するカラムを指定する。
+        var signPos = cb.sign(cb.literal(Integer.MAX_VALUE));
+        var signNeg = cb.sign(cb.sum(cb.literal(Integer.MIN_VALUE), cb.literal(1)));
+        var negPos = cb.neg(cb.literal(Integer.MAX_VALUE));
+        var negNeg = cb.neg(cb.sum(cb.literal(Integer.MIN_VALUE), cb.literal(1)));
+        var absPos = cb.abs(cb.literal(Integer.MAX_VALUE));
+        var absNeg = cb.abs(cb.sum(cb.literal(Integer.MIN_VALUE), cb.literal(1)));
+        var ceilingPos = cb.ceiling(cb.literal(1234.5678));
+        var ceilingNeg = cb.ceiling(cb.literal(-1234.5678));
+        var floorPos = cb.floor(cb.literal(1234.5678));
+        var floorNeg = cb.floor(cb.literal(-1234.5678));
+        var sqrt = cb.sqrt(cb.literal(2.0));
+        var exp = cb.exp(cb.literal(2.0));
+        var ln = cb.ln(cb.literal(2.0));
+        var power = cb.power(cb.literal(2), cb.literal(32));
+        var roundPos = cb.round(cb.literal(1234.5678), 2);
+        var roundNeg = cb.round(cb.literal(1234.5678), -2);
+        query.multiselect(
+                signPos, signNeg,
+                negPos, negNeg,
+                absPos, absNeg,
+                ceilingPos, ceilingNeg,
+                floorPos, floorNeg,
+                sqrt,
+                exp, ln,
+                power,
+                roundPos, roundNeg
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("numerical function: {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}",
+                    r.get(signPos), r.get(signNeg),
+                    r.get(negPos), r.get(negNeg),
+                    r.get(absPos), r.get(absNeg),
+                    r.get(ceilingPos), r.get(ceilingNeg),
+                    r.get(floorPos), r.get(floorNeg),
+                    r.get(sqrt),
+                    r.get(exp), r.get(ln),
+                    r.get(power),
+                    r.get(roundPos), r.get(roundNeg)
+            );
+        }
+    }
+
+    private void example05() {
+        logger.info("2.5 文字列関数");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+
+        // 取得するカラムを指定する。
+        var concat = cb.concat(cb.literal("ABCDE"), cb.literal("FGHIJ"));
+        var substring = cb.substring(cb.literal("ABCDEFGHIJ"), cb.literal(5));
+        var trim = cb.trim(cb.literal("  ABCDE  "));
+        var trimLeading = cb.trim(Trimspec.LEADING, cb.literal("  ABCDE  "));
+        var trimBoth = cb.trim(Trimspec.BOTH, cb.literal("  ABCDE  "));
+        var trimTrailing = cb.trim(Trimspec.TRAILING, cb.literal("  ABCDE  "));
+        var lower = cb.lower(cb.literal("ABCDEFGHIJ"));
+        var upper = cb.upper(cb.literal("abcdefghij"));
+        var length = cb.length(cb.literal("ABCDEFGHIJ"));
+        var locate = cb.locate(cb.literal("ABCDEFGHIJ"), cb.literal("DEF"));
+        query.multiselect(
+                concat,
+                substring,
+                trim, trimLeading, trimBoth, trimTrailing,
+                lower, upper,
+                length,
+                locate
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("string function: {} {} {} {} {} {} {} {} {} {}",
+                    r.get(concat),
+                    r.get(substring),
+                    r.get(trim), r.get(trimLeading), r.get(trimBoth), r.get(trimTrailing),
+                    r.get(lower), r.get(upper),
+                    r.get(length),
+                    r.get(locate)
+            );
+        }
+    }
+
+    private void example06() {
+        logger.info("2.6 日時関数");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+
+        // 取得するカラムを指定する。
+        var currentDatetime = cb.currentTimestamp();
+        var currentDate = cb.currentDate();
+        var currentTime = cb.currentTime();
+        var localDatetime = cb.localDateTime();
+        var localDate = cb.localDate();
+        var localTime = cb.localTime();
+        query.multiselect(
+                currentDatetime, currentDate, currentTime,
+                localDatetime, localDate, localTime
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("datetime function: {} {} {} {} {} {}",
+                    r.get(currentDatetime), r.get(currentDate), r.get(currentTime),
+                    r.get(localDatetime), r.get(localDate), r.get(localTime)
+            );
+        }
+    }
+}
