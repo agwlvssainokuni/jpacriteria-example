@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.LongStream;
@@ -54,6 +55,8 @@ public class SandboxExample {
         example007();
         example008();
         example009();
+        example010();
+        example011();
     }
 
     private void example001() {
@@ -309,6 +312,101 @@ public class SandboxExample {
                         so.getId(), so.getStatus(),
                         cust.getId(), cust.getFirstName(), cust.getLastName()
                 ));
+            });
+        }
+    }
+
+    private void example010() {
+        logger.info("Example010 WITH RECURSIVE で連番生成 (Hibernate)");
+
+        var cb = em.getCriteriaBuilder();
+        var hcb = Optional.of(cb)
+                .filter(HibernateCriteriaBuilder.class::isInstance).map(HibernateCriteriaBuilder.class::cast)
+                .get();
+
+        var query = hcb.createTupleQuery();
+
+        var seqFrom = 1;
+        var seqTo = 10;
+        var seqStep = 1;
+        var seqCol = "n";
+        var seqCte = query.withRecursiveUnionAll(
+                hcb.createTupleQuery().multiselect(
+                        hcb.literal(seqFrom).alias(seqCol)
+                ),
+                (cteCriteria) -> {
+                    var q = hcb.createTupleQuery();
+                    var cteRoot = q.from(cteCriteria);
+                    q.where(hcb.between(
+                            hcb.sum(cteRoot.get(seqCol), hcb.literal(seqStep)),
+                            hcb.literal(Math.min(seqFrom, seqTo)),
+                            hcb.literal(Math.max(seqFrom, seqTo))
+                    ));
+                    q.multiselect(
+                            hcb.sum(cteRoot.get(seqCol), hcb.literal(seqStep))
+                    );
+                    return q;
+                }
+        );
+
+        var root = query.from(seqCte);
+        var seqExpr = root.get(seqCol).asInteger();
+        query.multiselect(seqExpr);
+
+        try (var result = em.createQuery(query).getResultStream()) {
+            result.forEach(tuple -> {
+                logger.info("seq: {}", tuple.get(seqExpr));
+            });
+        }
+    }
+
+    private void example011() {
+        logger.info("Example011 WITH RECURSIVE で連番生成して日付計算 (Hibernate)");
+
+        var cb = em.getCriteriaBuilder();
+        var hcb = Optional.of(cb)
+                .filter(HibernateCriteriaBuilder.class::isInstance).map(HibernateCriteriaBuilder.class::cast)
+                .get();
+
+        var query = hcb.createTupleQuery();
+
+        var seqFrom = -12;
+        var seqTo = 12;
+        var seqStep = 1;
+        var seqCol = "n";
+        var seqCte = query.withRecursiveUnionAll(
+                hcb.createTupleQuery().multiselect(
+                        hcb.literal(seqFrom).alias(seqCol)
+                ),
+                (cteCriteria) -> {
+                    var q = hcb.createTupleQuery();
+                    var cteRoot = q.from(cteCriteria);
+                    q.where(hcb.between(
+                            hcb.sum(cteRoot.get(seqCol), hcb.literal(seqStep)),
+                            hcb.literal(Math.min(seqFrom, seqTo)),
+                            hcb.literal(Math.max(seqFrom, seqTo))
+                    ));
+                    q.multiselect(
+                            hcb.sum(cteRoot.get(seqCol), hcb.literal(seqStep))
+                    );
+                    return q;
+                }
+        );
+
+        var root = query.from(seqCte);
+        var seqExpr = root.get(seqCol).asInteger();
+        var date = hcb.addDuration(
+                hcb.currentDate().as(LocalDate.class),
+                hcb.durationScaled(root.get(seqCol), hcb.duration(1L, TemporalUnit.MONTH))
+        );
+        query.multiselect(
+                seqExpr,
+                date
+        );
+
+        try (var result = em.createQuery(query).getResultStream()) {
+            result.forEach(tuple -> {
+                logger.info("seq: {} {}", tuple.get(seqExpr), tuple.get(date));
             });
         }
     }
