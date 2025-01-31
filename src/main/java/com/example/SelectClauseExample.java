@@ -19,9 +19,7 @@ package com.example;
 import com.example.db.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,6 +53,8 @@ public class SelectClauseExample {
         example06();
         example07();
         example08();
+        example09();
+        example10();
     }
 
     private void example01() {
@@ -365,6 +365,76 @@ public class SelectClauseExample {
             logger.info("SalesOrder: {} {}, status {}",
                     r.get(so).getId(), r.get(so).getStatus(),
                     r.get(status)
+            );
+        }
+    }
+
+    private void example09() {
+        logger.info("2.9 集約関数(SUM)");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+        Root<SalesOrder> so = query.from(SalesOrder.class);
+        ListJoin<SalesOrder, SalesOrderItem> soi = so.join(SalesOrder_.item, JoinType.LEFT);
+
+        // 集約単位を指定する。
+        query.groupBy(so);
+
+        // 集約関数。
+        var amount = cb.sum(
+                cb.prod(
+                        soi.get(SalesOrderItem_.unitPrice),
+                        soi.get(SalesOrderItem_.quantity)
+                )
+        );
+        query.multiselect(
+                so,
+                amount
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("SalesOrder: {} {}, amount {}",
+                    r.get(so).getId(), r.get(so).getStatus(),
+                    r.get(amount)
+            );
+        }
+    }
+
+    private void example10() {
+        logger.info("2.10 COALESCE関数");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+        Root<SalesOrder> so = query.from(SalesOrder.class);
+        ListJoin<SalesOrder, SalesOrderItem> soi = so.join(SalesOrder_.item, JoinType.LEFT);
+
+        // 集約単位を指定する。
+        query.groupBy(so);
+
+        // COALESCE関数 (集約結果に対して適用)。
+        var amount = cb.coalesce()
+                .value(cb.sum(
+                        cb.prod(
+                                soi.get(SalesOrderItem_.unitPrice),
+                                soi.get(SalesOrderItem_.quantity)
+                        )
+                ))
+                .value(cb.literal(BigDecimal.ZERO));
+        query.multiselect(
+                so,
+                amount
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("SalesOrder: {} {}, amount {}",
+                    r.get(so).getId(), r.get(so).getStatus(),
+                    r.get(amount)
             );
         }
     }
