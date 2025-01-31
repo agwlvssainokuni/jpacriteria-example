@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example;
+package com.example.jpa;
 
 import com.example.db.entity.*;
 import jakarta.persistence.EntityManager;

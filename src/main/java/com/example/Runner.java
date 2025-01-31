@@ -16,6 +16,9 @@
 
 package com.example;
 
+import com.example.jpa.BasicUsageExample;
+import com.example.jpa.FromClauseExample;
+import com.example.jpa.SelectClauseExample;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
