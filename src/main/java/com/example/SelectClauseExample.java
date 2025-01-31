@@ -55,6 +55,7 @@ public class SelectClauseExample {
         example08();
         example09();
         example10();
+        example11();
     }
 
     private void example01() {
@@ -312,6 +313,8 @@ public class SelectClauseExample {
                 .when(cb.literal(SalesOrderStatus.PREPARING), cb.literal("PREPARING"))
                 .when(cb.literal(SalesOrderStatus.SHIPPED), cb.literal("SHIPPED"))
                 .otherwise(cb.literal("UNKNOWN"));
+
+        // 結果として抽出する項目を指定する。
         query.multiselect(
                 so,
                 status
@@ -354,6 +357,8 @@ public class SelectClauseExample {
                         cb.literal("SHIPPED")
                 )
                 .otherwise(cb.literal("UNKNOWN"));
+
+        // 結果として抽出する項目を指定する。
         query.multiselect(
                 so,
                 status
@@ -388,6 +393,8 @@ public class SelectClauseExample {
                         soi.get(SalesOrderItem_.quantity)
                 )
         );
+
+        // 結果として抽出する項目を指定する。
         query.multiselect(
                 so,
                 amount
@@ -424,6 +431,50 @@ public class SelectClauseExample {
                         )
                 ))
                 .value(cb.literal(BigDecimal.ZERO));
+
+        // 結果として抽出する項目を指定する。
+        query.multiselect(
+                so,
+                amount
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("SalesOrder: {} {}, amount {}",
+                    r.get(so).getId(), r.get(so).getStatus(),
+                    r.get(amount)
+            );
+        }
+    }
+
+    private void example11() {
+        logger.info("2.11 スカラサブクエリ");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+        Root<SalesOrder> so = query.from(SalesOrder.class);
+
+        // スカラサブクエリを組み立てる。
+        Subquery<BigDecimal> amount = query.subquery(BigDecimal.class);
+        Root<SalesOrderItem> soi = amount.from(SalesOrderItem.class);
+        amount.where(
+                cb.equal(
+                        soi.get(SalesOrderItem_.salesOrder).get(SalesOrder_.id),
+                        so.get(SalesOrder_.id)
+                )
+        );
+        amount.select(
+                cb.sum(
+                        cb.prod(
+                                soi.get(SalesOrderItem_.unitPrice),
+                                soi.get(SalesOrderItem_.quantity).as(BigDecimal.class)
+                        )
+                )
+        );
+
+        // 結果として抽出する項目を指定する。
         query.multiselect(
                 so,
                 amount
