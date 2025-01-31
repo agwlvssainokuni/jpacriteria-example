@@ -16,8 +16,7 @@
 
 package com.example;
 
-import com.example.db.entity.Customer;
-import com.example.db.entity.Customer_;
+import com.example.db.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -54,6 +53,8 @@ public class SelectClauseExample {
         example04();
         example05();
         example06();
+        example07();
+        example08();
     }
 
     private void example01() {
@@ -292,6 +293,78 @@ public class SelectClauseExample {
             logger.info("datetime function: {} {} {} {} {} {}",
                     r.get(currentDatetime), r.get(currentDate), r.get(currentTime),
                     r.get(localDatetime), r.get(localDate), r.get(localTime)
+            );
+        }
+    }
+
+    private void example07() {
+        logger.info("2.7 単純CASE式");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+        Root<SalesOrder> so = query.from(SalesOrder.class);
+
+        // 単純CASE式を組み立てる。
+        var status = cb.selectCase(so.get(SalesOrder_.status))
+                .when(cb.literal(SalesOrderStatus.NEW), cb.literal("NEW"))
+                .when(cb.literal(SalesOrderStatus.APPROVED), cb.literal("APPROVED"))
+                .when(cb.literal(SalesOrderStatus.PREPARING), cb.literal("PREPARING"))
+                .when(cb.literal(SalesOrderStatus.SHIPPED), cb.literal("SHIPPED"))
+                .otherwise(cb.literal("UNKNOWN"));
+        query.multiselect(
+                so,
+                status
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("SalesOrder: {} {}, status {}",
+                    r.get(so).getId(), r.get(so).getStatus(),
+                    r.get(status)
+            );
+        }
+    }
+
+    private void example08() {
+        logger.info("2.8 検索CASE式");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+        Root<SalesOrder> so = query.from(SalesOrder.class);
+
+        // 検索CASE式を組み立てる。
+        var status = cb.selectCase()
+                .when(
+                        cb.equal(so.get(SalesOrder_.status), cb.literal(SalesOrderStatus.NEW)),
+                        cb.literal("NEW")
+                )
+                .when(
+                        cb.equal(so.get(SalesOrder_.status), cb.literal(SalesOrderStatus.APPROVED)),
+                        cb.literal("APPROVED")
+                )
+                .when(
+                        cb.equal(so.get(SalesOrder_.status), cb.literal(SalesOrderStatus.PREPARING)),
+                        cb.literal("PREPARING")
+                )
+                .when(
+                        cb.equal(so.get(SalesOrder_.status), cb.literal(SalesOrderStatus.SHIPPED)),
+                        cb.literal("SHIPPED")
+                )
+                .otherwise(cb.literal("UNKNOWN"));
+        query.multiselect(
+                so,
+                status
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("SalesOrder: {} {}, status {}",
+                    r.get(so).getId(), r.get(so).getStatus(),
+                    r.get(status)
             );
         }
     }
