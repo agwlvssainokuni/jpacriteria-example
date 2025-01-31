@@ -126,6 +126,7 @@ public class PrepareExample {
             item.setSalesOrder(salesOrder);
             item.setUnitPrice(key.getUnitPrice());
             item.setQuantity(value);
+            item.setProduct(key);
             em.persist(item);
         });
     }
