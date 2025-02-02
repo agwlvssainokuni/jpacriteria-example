@@ -16,10 +16,7 @@
 
 package com.example;
 
-import com.example.jpa.JpaBasicUsageExample;
-import com.example.jpa.JpaFromClauseExample;
-import com.example.jpa.JpaSelectClauseExample;
-import com.example.jpa.JpaWhereClauseExample;
+import com.example.jpa.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -33,6 +30,7 @@ public class Runner implements ApplicationRunner {
     private final JpaSelectClauseExample jpaSelectClauseExample;
     private final JpaFromClauseExample jpaFromClauseExample;
     private final JpaWhereClauseExample jpaWhereClauseExample;
+    private final JpaOtherUsageExample jpaOtherUsageExample;
     private final SandboxExample sandboxExample;
 
     public Runner(
@@ -41,6 +39,7 @@ public class Runner implements ApplicationRunner {
             JpaSelectClauseExample jpaSelectClauseExample,
             JpaFromClauseExample jpaFromClauseExample,
             JpaWhereClauseExample jpaWhereClauseExample,
+            JpaOtherUsageExample jpaOtherUsageExample,
             SandboxExample sandboxExample
     ) {
         this.prepareExample = prepareExample;
@@ -48,6 +47,7 @@ public class Runner implements ApplicationRunner {
         this.jpaSelectClauseExample = jpaSelectClauseExample;
         this.jpaFromClauseExample = jpaFromClauseExample;
         this.jpaWhereClauseExample = jpaWhereClauseExample;
+        this.jpaOtherUsageExample = jpaOtherUsageExample;
         this.sandboxExample = sandboxExample;
     }
 
@@ -59,6 +59,7 @@ public class Runner implements ApplicationRunner {
         jpaSelectClauseExample.execute();
         jpaFromClauseExample.execute();
         jpaWhereClauseExample.execute();
+        jpaOtherUsageExample.execute();
         // sandboxExample.execute();
     }
 }
