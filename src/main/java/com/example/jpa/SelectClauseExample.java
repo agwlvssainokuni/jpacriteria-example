@@ -56,6 +56,7 @@ public class SelectClauseExample {
         example09();
         example10();
         example11();
+        example12();
     }
 
     private void example01() {
@@ -486,6 +487,59 @@ public class SelectClauseExample {
             logger.info("SalesOrder: {} {}, amount {}",
                     r.get(so).getId(), r.get(so).getStatus(),
                     r.get(amount)
+            );
+        }
+    }
+
+    private void example12() {
+        logger.info("2.12 SQL関数");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
+
+        // SQL関数呼び出し。
+        Expression<Number> cos00deg = cb.function("cos", Number.class,
+                cb.prod(
+                        cb.function("pi", Number.class),
+                        cb.quot(cb.literal(0.0), cb.literal(180.0))
+                )
+        );
+        Expression<Number> cos30deg = cb.function("cos", Number.class,
+                cb.prod(
+                        cb.function("pi", Number.class),
+                        cb.quot(cb.literal(30.0), cb.literal(180.0))
+                )
+        );
+        Expression<Number> cos45deg = cb.function("cos", Number.class,
+                cb.prod(
+                        cb.function("pi", Number.class),
+                        cb.quot(cb.literal(45.0), cb.literal(180.0))
+                )
+        );
+        Expression<Number> cos60deg = cb.function("cos", Number.class,
+                cb.prod(
+                        cb.function("pi", Number.class),
+                        cb.quot(cb.literal(60.0), cb.literal(180.0))
+                )
+        );
+        Expression<Number> cos90deg = cb.function("cos", Number.class,
+                cb.prod(
+                        cb.function("pi", Number.class),
+                        cb.quot(cb.literal(90.0), cb.literal(180.0))
+                )
+        );
+
+        // 結果として抽出する項目を指定する。
+        query.multiselect(
+                cos00deg, cos30deg, cos45deg, cos60deg, cos90deg
+        );
+
+        // クエリを発行する。
+        List<Tuple> result = em.createQuery(query).getResultList();
+        for (var r : result) {
+            logger.info("cos: {} {} {} {} {}",
+                    r.get(cos00deg), r.get(cos30deg), r.get(cos45deg), r.get(cos60deg), r.get(cos90deg)
             );
         }
     }
