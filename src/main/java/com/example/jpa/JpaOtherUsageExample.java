@@ -21,6 +21,7 @@ import com.example.db.entity.SalesOrderItem;
 import com.example.db.entity.SalesOrderItem_;
 import com.example.db.entity.SalesOrder_;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.*;
 import org.slf4j.Logger;
@@ -49,6 +50,7 @@ public class JpaOtherUsageExample {
         example02();
         example03();
         example04();
+        example05();
     }
 
     private void example01() {
@@ -199,6 +201,25 @@ public class JpaOtherUsageExample {
                     r.get(soi.get(SalesOrderItem_.salesOrder)).getId(),
                     r.get(soi.get(SalesOrderItem_.salesOrder)).getStatus(),
                     r.get(amount)
+            );
+        }
+    }
+
+    private void example05() {
+        logger.info("5.5 SELECT FOR UPDATE");
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // 抽出条件を組み立てる。
+        CriteriaQuery<SalesOrder> query = cb.createQuery(SalesOrder.class);
+        Root<SalesOrder> so = query.from(SalesOrder.class);
+
+        // クエリを発行する。
+        List<SalesOrder> result = em.createQuery(query)
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .getResultList();
+        for (var r : result) {
+            logger.info("SalesOrder: {} {}",
+                    r.getId(), r.getStatus()
             );
         }
     }
