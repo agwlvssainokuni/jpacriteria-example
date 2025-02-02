@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FromClauseExample {
+public class JpaFromClauseExample {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EntityManager em;
 
-    public FromClauseExample(EntityManager em) {
+    public JpaFromClauseExample(EntityManager em) {
         this.em = em;
     }
 

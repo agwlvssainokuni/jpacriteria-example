@@ -32,13 +32,13 @@ import java.util.List;
 import static jakarta.persistence.criteria.CriteriaBuilder.Trimspec;
 
 @Service
-public class SelectClauseExample {
+public class JpaSelectClauseExample {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EntityManager em;
 
-    public SelectClauseExample(EntityManager em) {
+    public JpaSelectClauseExample(EntityManager em) {
         this.em = em;
     }
 

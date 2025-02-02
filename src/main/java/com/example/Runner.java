@@ -16,10 +16,10 @@
 
 package com.example;
 
-import com.example.jpa.BasicUsageExample;
-import com.example.jpa.FromClauseExample;
-import com.example.jpa.SelectClauseExample;
-import com.example.jpa.WhereClauseExample;
+import com.example.jpa.JpaBasicUsageExample;
+import com.example.jpa.JpaFromClauseExample;
+import com.example.jpa.JpaSelectClauseExample;
+import com.example.jpa.JpaWhereClauseExample;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -29,25 +29,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class Runner implements ApplicationRunner {
 
     private final PrepareExample prepareExample;
-    private final BasicUsageExample basicUsageExample;
-    private final SelectClauseExample selectClauseExample;
-    private final FromClauseExample fromClauseExample;
-    private final WhereClauseExample whereClauseExample;
+    private final JpaBasicUsageExample jpaBasicUsageExample;
+    private final JpaSelectClauseExample jpaSelectClauseExample;
+    private final JpaFromClauseExample jpaFromClauseExample;
+    private final JpaWhereClauseExample jpaWhereClauseExample;
     private final SandboxExample sandboxExample;
 
     public Runner(
             PrepareExample prepareExample,
-            BasicUsageExample basicUsageExample,
-            SelectClauseExample selectClauseExample,
-            FromClauseExample fromClauseExample,
-            WhereClauseExample whereClauseExample,
+            JpaBasicUsageExample jpaBasicUsageExample,
+            JpaSelectClauseExample jpaSelectClauseExample,
+            JpaFromClauseExample jpaFromClauseExample,
+            JpaWhereClauseExample jpaWhereClauseExample,
             SandboxExample sandboxExample
     ) {
         this.prepareExample = prepareExample;
-        this.basicUsageExample = basicUsageExample;
-        this.selectClauseExample = selectClauseExample;
-        this.fromClauseExample = fromClauseExample;
-        this.whereClauseExample = whereClauseExample;
+        this.jpaBasicUsageExample = jpaBasicUsageExample;
+        this.jpaSelectClauseExample = jpaSelectClauseExample;
+        this.jpaFromClauseExample = jpaFromClauseExample;
+        this.jpaWhereClauseExample = jpaWhereClauseExample;
         this.sandboxExample = sandboxExample;
     }
 
@@ -55,10 +55,10 @@ public class Runner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         prepareExample.execute();
-        basicUsageExample.execute();
-        selectClauseExample.execute();
-        fromClauseExample.execute();
-        whereClauseExample.execute();
+        jpaBasicUsageExample.execute();
+        jpaSelectClauseExample.execute();
+        jpaFromClauseExample.execute();
+        jpaWhereClauseExample.execute();
         // sandboxExample.execute();
     }
 }

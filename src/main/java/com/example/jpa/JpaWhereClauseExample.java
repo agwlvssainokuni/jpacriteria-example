@@ -28,13 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class WhereClauseExample {
+public class JpaWhereClauseExample {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EntityManager em;
 
-    public WhereClauseExample(EntityManager em) {
+    public JpaWhereClauseExample(EntityManager em) {
         this.em = em;
     }
 

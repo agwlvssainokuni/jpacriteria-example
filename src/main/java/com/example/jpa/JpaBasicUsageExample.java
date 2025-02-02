@@ -30,13 +30,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class BasicUsageExample {
+public class JpaBasicUsageExample {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EntityManager em;
 
-    public BasicUsageExample(EntityManager em) {
+    public JpaBasicUsageExample(EntityManager em) {
         this.em = em;
     }
 
