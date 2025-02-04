@@ -27,6 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static jakarta.persistence.criteria.CriteriaBuilder.Trimspec;
@@ -278,14 +284,14 @@ public class JpaSelectClauseExample {
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
 
         // 取得するカラムを指定する。
-        var currentDatetime = cb.currentTimestamp();
-        var currentDate = cb.currentDate();
-        var currentTime = cb.currentTime();
-        var localDatetime = cb.localDateTime();
-        var localDate = cb.localDate();
-        var localTime = cb.localTime();
+        Expression<Timestamp> currentTimestamp = cb.currentTimestamp();
+        Expression<Date> currentDate = cb.currentDate();
+        Expression<Time> currentTime = cb.currentTime();
+        Expression<LocalDateTime> localDatetime = cb.localDateTime();
+        Expression<LocalDate> localDate = cb.localDate();
+        Expression<LocalTime> localTime = cb.localTime();
         query.multiselect(
-                currentDatetime, currentDate, currentTime,
+                currentTimestamp, currentDate, currentTime,
                 localDatetime, localDate, localTime
         );
 
@@ -293,7 +299,9 @@ public class JpaSelectClauseExample {
         List<Tuple> result = em.createQuery(query).getResultList();
         for (var r : result) {
             logger.info("datetime function: {} {} {} {} {} {}",
-                    r.get(currentDatetime), r.get(currentDate), r.get(currentTime),
+                    r.get(currentTimestamp).toLocalDateTime(),
+                    r.get(currentDate).toLocalDate(),
+                    r.get(currentTime).toLocalTime(),
                     r.get(localDatetime), r.get(localDate), r.get(localTime)
             );
         }
