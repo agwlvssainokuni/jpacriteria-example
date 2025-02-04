@@ -37,7 +37,6 @@ public class Runner implements ApplicationRunner {
     private final HibernateWithClauseExample hibernateWithClauseExample;
     private final HibernateFromClauseExample hibernateFromClauseExample;
     private final HibernateFunctionExample hibernateFunctionExample;
-    private final SandboxExample sandboxExample;
 
     public Runner(
             PrepareExample prepareExample,
@@ -48,8 +47,7 @@ public class Runner implements ApplicationRunner {
             JpaOtherUsageExample jpaOtherUsageExample,
             HibernateWithClauseExample hibernateWithClauseExample,
             HibernateFromClauseExample hibernateFromClauseExample,
-            HibernateFunctionExample hibernateFunctionExample,
-            SandboxExample sandboxExample
+            HibernateFunctionExample hibernateFunctionExample
     ) {
         this.prepareExample = prepareExample;
         this.jpaBasicUsageExample = jpaBasicUsageExample;
@@ -60,7 +58,6 @@ public class Runner implements ApplicationRunner {
         this.hibernateWithClauseExample = hibernateWithClauseExample;
         this.hibernateFromClauseExample = hibernateFromClauseExample;
         this.hibernateFunctionExample = hibernateFunctionExample;
-        this.sandboxExample = sandboxExample;
     }
 
     @Transactional
@@ -77,6 +74,5 @@ public class Runner implements ApplicationRunner {
         hibernateWithClauseExample.execute();
         hibernateFromClauseExample.execute();
         hibernateFunctionExample.execute();
-        // sandboxExample.execute();
     }
 }
