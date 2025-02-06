@@ -6,8 +6,15 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.34/ec547ef414ab1d2c040118fb9c1c265ada63af14/lombok-1.18.34.jar" />
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate.orm/hibernate-jpamodelgen/6.6.4.Final/7c87f36caff997f8ce74e04c22100b6819dad248/hibernate-jpamodelgen-6.6.4.Final.jar" />
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate.orm/hibernate-core/6.6.4.Final/95c6d2d58c40dbbfbbd58084941e5cbca4ddef2f/hibernate-core-6.6.4.Final.jar" />
+        </processorPath>
+        <module name="jpacriteria-example.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.34/ec547ef414ab1d2c040118fb9c1c265ada63af14/lombok-1.18.34.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate.orm/hibernate-jpamodelgen/6.6.5.Final/19a9ac42da292d05fa785422d8da8610f3cf9c2b/hibernate-jpamodelgen-6.6.5.Final.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate.orm/hibernate-core/6.6.5.Final/c81deca40ebdb823d9f8a9e5dc5798a6a205626a/hibernate-core-6.6.5.Final.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate.common/hibernate-commons-annotations/7.0.3.Final/e183c4be8bb41d12e9f19b374e00c34a0a85f439/hibernate-commons-annotations-7.0.3.Final.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.smallrye/jandex/3.2.0/f17ad860f62a08487b9edabde608f8ac55c62fa7/jandex-3.2.0.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.jaxb/jaxb-runtime/4.0.5/ca84c2a7169b5293e232b9d00d1e4e36d4c3914a/jaxb-runtime-4.0.5.jar" />
@@ -28,13 +35,6 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.istack/istack-commons-runtime/4.1.2/18ec117c85f3ba0ac65409136afa8e42bc74e739/istack-commons-runtime-4.1.2.jar" />
         </processorPath>
         <module name="jpacriteria-example.entity" />
-      </profile>
-      <profile name="Gradle Imported" enabled="true">
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.34/ec547ef414ab1d2c040118fb9c1c265ada63af14/lombok-1.18.34.jar" />
-        </processorPath>
-        <module name="jpacriteria-example.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="21" />
