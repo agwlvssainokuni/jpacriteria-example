@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.springframework.boot' version '3.4.2'
+    id 'org.springframework.boot' version '3.4.3'
 }
 
 java {
@@ -26,7 +26,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:3.4.2"
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.3'
     }
 }
 
@@ -69,7 +69,7 @@ sourceSets {
     entity
     entitymodel {
         java {
-            srcDir file("build/generated/sources/annotationProcessor/java/entity")
+            srcDir file('build/generated/sources/annotationProcessor/java/entity')
         }
     }
 }
