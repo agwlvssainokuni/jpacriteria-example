@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.springframework.boot' version '3.4.3'
+    id 'org.springframework.boot' version '3.4.6'
 }
 
 java {
@@ -18,15 +18,18 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    jvmArgs += "-javaagent:${configurations.javaagent.asPath}"
 }
 
 repositories {
     mavenCentral()
 }
 
+configurations { javaagent }
+
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.3'
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.6'
     }
 }
 
@@ -42,6 +45,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    javaagent('org.mockito:mockito-core') { transitive = false }
 }
 
 // エンティティとJPAメタモデルは、別々のソースセットにした方が良さげ。
