@@ -50,6 +50,18 @@ public class JpaFromClauseExample {
         this.em = em;
     }
 
+    /**
+     * JPA Criteria APIのFROM句に関する様々な表現方法の例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>単一表指定</li>
+     * <li>fetchによる関連エンティティ一括取得（内部結合・外部結合）</li>
+     * <li>joinによる関連エンティティ結合（内部結合・外部結合）</li>
+     * <li>1:1、1:N、1:N-1:1の関連パターン</li>
+     * <li>FROM句での複数表指定とWHERE句結合条件</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("3. FROM句の書き方");

@@ -54,6 +54,17 @@ public class JpaOtherUsageExample {
         this.em = em;
     }
 
+    /**
+     * JPA Criteria APIのその他の機能や句に関する使用例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>GROUP BY句（カラム指定・エンティティ指定）</li>
+     * <li>HAVING句による集約結果の絞り込み</li>
+     * <li>ORDER BY句による結果のソート</li>
+     * <li>SELECT FOR UPDATE（悲観的ロック）</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("5. その他の書き方");

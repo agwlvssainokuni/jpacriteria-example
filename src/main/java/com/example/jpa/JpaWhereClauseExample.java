@@ -49,6 +49,20 @@ public class JpaWhereClauseExample {
         this.em = em;
     }
 
+    /**
+     * JPA Criteria APIのWHERE句に関する様々な表現方法の例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>単一条件と複合条件（AND/OR組み合わせ）</li>
+     * <li>LIKE/NOT LIKE述語によるパターンマッチング</li>
+     * <li>IN/NOT IN述語による複数値条件</li>
+     * <li>IS NULL/IS NOT NULL述語によるNULL判定</li>
+     * <li>BETWEEN述語による範囲条件</li>
+     * <li>EXISTS/NOT EXISTS述語とサブクエリ</li>
+     * <li>履歴テーブルからの最新レコード抽出パターン</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("4. WHERE句の書き方");

@@ -60,6 +60,19 @@ public class JpaSelectClauseExample {
         this.em = em;
     }
 
+    /**
+     * JPA Criteria APIのSELECT句に関する様々な表現方法の例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>基本的なカラム指定と定数値</li>
+     * <li>数値計算と数値関数</li>
+     * <li>文字列関数と日時関数</li>
+     * <li>CASE式（単純・検索）</li>
+     * <li>集約関数とCOALESCE関数</li>
+     * <li>スカラサブクエリとSQL関数呼び出し</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("2. SELECT句の書き方");

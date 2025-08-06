@@ -51,6 +51,15 @@ public class HibernateFromClauseExample {
         this.em = em;
     }
 
+    /**
+     * Hibernate固有のFROM句拡張機能の使用例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>関連が定義されていないエンティティ間のJOIN（ON句使用）</li>
+     * <li>サブクエリをFROM句に指定する派生テーブルパターン</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("7. (Hibernate拡張) FROM句");

@@ -52,6 +52,18 @@ public class JpaBasicUsageExample {
         this.em = em;
     }
 
+    /**
+     * JPA Criteria APIの基本的な使用例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>単一エンティティの取得</li>
+     * <li>Tupleによる複数カラム取得</li>
+     * <li>fetchによる関連エンティティ一括取得（親駆動・子駆動）</li>
+     * <li>joinによる関連エンティティ結合（親駆動・子駆動）</li>
+     * <li>Streamによるカーソル処理</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("1. 基本的なAPIの呼出し方");

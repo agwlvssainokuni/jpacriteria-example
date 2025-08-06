@@ -55,6 +55,16 @@ public class HibernateFunctionExample {
         this.em = em;
     }
 
+    /**
+     * Hibernate固有のSQL関数の使用例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>拡張数値関数（三角関数、対数関数、双曲線関数等）</li>
+     * <li>拡張文字列関数（overlay、pad、repeat、left、right等）</li>
+     * <li>拡張日時関数（format、truncate、duration操作等）</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("8. (Hibernate拡張) SQL関数");

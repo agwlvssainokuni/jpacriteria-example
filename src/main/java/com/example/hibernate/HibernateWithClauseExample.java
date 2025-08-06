@@ -50,6 +50,17 @@ public class HibernateWithClauseExample {
         this.em = em;
     }
 
+    /**
+     * Hibernate固有のWITH句（CTE: Common Table Expression）機能の使用例を実行します。
+     * <p>
+     * 以下の例を順次実行します：
+     * <ul>
+     * <li>WITH RECURSIVEによる連番生成（0-9）</li>
+     * <li>CTEを複数回参照した連番生成（0-99）</li>
+     * <li>さらに複雑な連番生成（0-999）</li>
+     * <li>再帰制限を超える大量連番生成（0-9999）</li>
+     * </ul>
+     */
     @Transactional
     public void execute() {
         logger.info("6. (Hibernate拡張) WITH句");
