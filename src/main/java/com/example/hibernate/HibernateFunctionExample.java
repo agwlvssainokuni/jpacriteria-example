@@ -73,6 +73,12 @@ public class HibernateFunctionExample {
         example03();
     }
 
+    /**
+     * Hibernate拡張の数値関数群の使用例。
+     * <p>
+     * 標準JPA以外の数値関数（三角関数、対数関数、双曲線関数など）を使用します。
+     * HibernateCriteriaBuilderにキャストすることで拡張関数が利用可能になります。
+     */
     private void example01() {
         logger.info("8.1 数値関数");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -173,6 +179,12 @@ public class HibernateFunctionExample {
         }
     }
 
+    /**
+     * Hibernate拡張の日時関数群の使用例。
+     * <p>
+     * 標準JPA以外の日時関数（format、truncate、duration操作など）を使用します。
+     * 特にDuration型を使用した期間計算やInstant型の操作が特徴的です。
+     */
     private void example03() {
         logger.info("8.3 日時関数");
         CriteriaBuilder cb = em.getCriteriaBuilder();

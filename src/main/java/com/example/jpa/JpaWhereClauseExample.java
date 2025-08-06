@@ -422,6 +422,12 @@ public class JpaWhereClauseExample {
         }
     }
 
+    /**
+     * EXISTS述語を使用したサブクエリ存在チェックの例。
+     * <p>
+     * 関連レコードが存在するかどうかをチェックするためにEXISTS述語を使用します。
+     * サブクエリと相関させることで、効率的な存在チェックが可能です。
+     */
     private void example13() {
         logger.info("4.13 EXISTS述語");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -486,6 +492,12 @@ public class JpaWhereClauseExample {
         }
     }
 
+    /**
+     * NOT EXISTS述語を使用した履歴テーブルから最新レコード抽出の例。
+     * <p>
+     * 履歴テーブルから各IDの最新レコード（最大SEQ値）のみを抽出する実用的なパターンです。
+     * 「自分より新しいレコードが存在しない」という条件でNOT EXISTSを使用します。
+     */
     private void example15() {
         logger.info("4.15 NOT EXISTS用例 - 履歴の各組の中で最新を抽出");
         CriteriaBuilder cb = em.getCriteriaBuilder();

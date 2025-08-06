@@ -67,6 +67,12 @@ public class HibernateFromClauseExample {
         example02();
     }
 
+    /**
+     * 関連が定義されていないエンティティ間でのJOINの例。
+     * <p>
+     * エンティティ間に@JoinColumnなどの関連が定義されていない場合でも、
+     * ON句を使用して任意の結合条件を指定してJOINを実行できます。
+     */
     private void example01() {
         logger.info("7.1 関連が定義されていないエンティティのJOIN");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -107,6 +113,12 @@ public class HibernateFromClauseExample {
         }
     }
 
+    /**
+     * サブクエリをFROM句に指定する派生テーブルの例。
+     * <p>
+     * 複雑なクエリの結果を一時的なテーブルとして扱うため、
+     * サブクエリをFROM句に配置する派生テーブルのパターンです。
+     */
     private void example02() {
         logger.info("7.2 サブクエリをFROM句に指定する");
         CriteriaBuilder cb = em.getCriteriaBuilder();

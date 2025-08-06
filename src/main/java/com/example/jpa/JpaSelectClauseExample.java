@@ -332,6 +332,12 @@ public class JpaSelectClauseExample {
         }
     }
 
+    /**
+     * 単純CASE式を使用した条件分岐の例。
+     * <p>
+     * selectCaseメソッドを使用して、カラムの値に基づく条件分岐を実装します。
+     * 単純CASE式は特定のカラムの値をwhenで指定した値と比較します。
+     */
     private void example07() {
         logger.info("2.7 単純CASE式");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -482,6 +488,12 @@ public class JpaSelectClauseExample {
         }
     }
 
+    /**
+     * スカラサブクエリを使用した相関サブクエリの例。
+     * <p>
+     * SELECT句でサブクエリを使用して、関連テーブルから計算結果を取得します。
+     * 外部クエリの値を内部クエリで参照する相関サブクエリのパターンです。
+     */
     private void example11() {
         logger.info("2.11 スカラサブクエリ");
         CriteriaBuilder cb = em.getCriteriaBuilder();

@@ -70,6 +70,12 @@ public class HibernateWithClauseExample {
         example04();
     }
 
+    /**
+     * WITH RECURSIVEを使用した基本的な連番生成の例（0-9）。
+     * <p>
+     * 共通テーブル式（CTE）の再帰機能を使用して0から9までの連番を生成します。
+     * withRecursiveUnionAllメソッドを使用してベースケースと再帰ケースを定義します。
+     */
     private void example01() {
         logger.info("6.1 WITH RECURSIVEで連番生成 (0-9)");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -244,6 +250,12 @@ public class HibernateWithClauseExample {
         }
     }
 
+    /**
+     * WITH RECURSIVEを複数回参照して大量連番生成する例（0-9999）。
+     * <p>
+     * 同じCTEを複数回参照し、桁を組み合わせることで再帰制限を超える
+     * 大量の連番を効率的に生成する高度なパターンです。
+     */
     private void example04() {
         // WITH RECURSIVE の再帰回数の上限以上の連番を生成できる。
         logger.info("6.4 WITH RECURSIVEで連番生成 (0-9999)");

@@ -76,6 +76,12 @@ public class JpaBasicUsageExample {
         example07();
     }
 
+    /**
+     * 単一のエンティティをそのまま取得する例。
+     * <p>
+     * Customerエンティティを全件取得し、結果をCustomerオブジェクトのリストとして受け取ります。
+     * これはJPA Criteria APIの最も基本的な使用方法です。
+     */
     private void example01() {
         logger.info("1.1 単一のBeanとして取り出す");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -98,6 +104,12 @@ public class JpaBasicUsageExample {
         }
     }
 
+    /**
+     * 複数のカラムをTupleとして取得する例。
+     * <p>
+     * エンティティ全体ではなく、特定のカラムのみを選択してTupleとして受け取ります。
+     * multiselectメソッドを使用して複数のカラムを指定します。
+     */
     private void example02() {
         logger.info("1.2 複数のカラムをTupleとして取り出す");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -124,6 +136,12 @@ public class JpaBasicUsageExample {
         }
     }
 
+    /**
+     * fetchを使用して1対多の関連エンティティを一度のクエリで取得する例（親駆動）。
+     * <p>
+     * SalesOrderエンティティと関連するSalesOrderItemエンティティを
+     * fetchを使用して一度のクエリで取得します。N+1問題を回避できます。
+     */
     private void example03() {
         logger.info("1.3 (fetch)1:Nのレコードを一回のクエリで取得する(親駆動)");
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -228,6 +246,12 @@ public class JpaBasicUsageExample {
         }
     }
 
+    /**
+     * Streamを使用したカーソル処理による1レコードずつの取得例。
+     * <p>
+     * 大量データを効率的に処理するため、getResultStream()を使用して
+     * 結果をStreamとして受け取り、try-with-resourcesでリソース管理を行います。
+     */
     private void example07() {
         logger.info("1.7 1レコードずつ取得する(カーソル処理)");
         CriteriaBuilder cb = em.getCriteriaBuilder();
