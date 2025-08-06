@@ -27,6 +27,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * JPA Criteria APIのWHERE句に関する様々な表現方法を示すクラス。
+ * <p>
+ * このクラスでは以下のWHERE句の書き方を実装しています：
+ * <ul>
+ * <li>単一条件と複合条件（AND/OR）</li>
+ * <li>LIKE、IN、IS NULL、BETWEEN述語</li>
+ * <li>EXISTS/NOT EXISTS述語とサブクエリ</li>
+ * <li>履歴テーブルからの最新レコード抽出パターン</li>
+ * </ul>
+ */
 @Service
 public class JpaWhereClauseExample {
 

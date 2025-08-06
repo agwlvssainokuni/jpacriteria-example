@@ -37,6 +37,18 @@ import java.util.List;
 
 import static jakarta.persistence.criteria.CriteriaBuilder.Trimspec;
 
+/**
+ * JPA Criteria APIのSELECT句に関する様々な表現方法を示すクラス。
+ * <p>
+ * このクラスでは以下のSELECT句の書き方を実装しています：
+ * <ul>
+ * <li>カラム指定、定数値、計算式</li>
+ * <li>数値関数、文字列関数、日時関数</li>
+ * <li>単純CASE式、検索CASE式</li>
+ * <li>集約関数、COALESCE関数</li>
+ * <li>スカラサブクエリ、SQL関数</li>
+ * </ul>
+ */
 @Service
 public class JpaSelectClauseExample {
 

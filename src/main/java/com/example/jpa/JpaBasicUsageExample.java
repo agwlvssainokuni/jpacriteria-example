@@ -29,6 +29,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * JPA Criteria APIの基本的な使用例を示すクラス。
+ * <p>
+ * このクラスでは以下の基本的なパターンを実装しています：
+ * <ul>
+ * <li>単一エンティティの取得</li>
+ * <li>Tupleを使用した複数カラムの取得</li>
+ * <li>fetchを使用した関連エンティティの一括取得</li>
+ * <li>joinを使用した関連エンティティとの結合</li>
+ * <li>Streamを使用したカーソル処理</li>
+ * </ul>
+ */
 @Service
 public class JpaBasicUsageExample {
 

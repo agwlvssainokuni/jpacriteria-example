@@ -33,6 +33,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Hibernate固有のSQL関数の使用例を示すクラス。
+ * <p>
+ * このクラスでは以下のHibernate拡張関数を実装しています：
+ * <ul>
+ * <li>拡張数値関数（三角関数、対数関数、双曲線関数など）</li>
+ * <li>拡張文字列関数（overlay、pad、repeat、left、rightなど）</li>
+ * <li>拡張日時関数（format、truncate、duration操作など）</li>
+ * <li>Instant型とLocalDateTime型間の変換操作</li>
+ * </ul>
+ */
 @Service
 public class HibernateFunctionExample {
 

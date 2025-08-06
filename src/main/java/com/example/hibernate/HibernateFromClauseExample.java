@@ -29,6 +29,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Hibernate固有のFROM句拡張機能の使用例を示すクラス。
+ * <p>
+ * このクラスでは以下のHibernate拡張機能を実装しています：
+ * <ul>
+ * <li>関連が定義されていないエンティティ間のJOIN</li>
+ * <li>サブクエリをFROM句に指定する（派生テーブル）</li>
+ * <li>条件付きJOIN（ON句の使用）</li>
+ * <li>複雑な結合条件の組み立て</li>
+ * </ul>
+ */
 @Service
 public class HibernateFromClauseExample {
 

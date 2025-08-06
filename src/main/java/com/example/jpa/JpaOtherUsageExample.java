@@ -32,6 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * JPA Criteria APIのその他の機能や句に関する使用例を示すクラス。
+ * <p>
+ * このクラスでは以下の機能を実装しています：
+ * <ul>
+ * <li>GROUP BY句（カラム指定とエンティティ指定）</li>
+ * <li>HAVING句による集約結果の絞り込み</li>
+ * <li>ORDER BY句によるソート</li>
+ * <li>SELECT FOR UPDATE（悲観的ロック）</li>
+ * </ul>
+ */
 @Service
 public class JpaOtherUsageExample {
 

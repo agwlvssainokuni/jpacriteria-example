@@ -28,6 +28,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * JPA Criteria APIのFROM句に関する様々な表現方法を示すクラス。
+ * <p>
+ * このクラスでは以下のFROM句の書き方を実装しています：
+ * <ul>
+ * <li>単一表指定、fetchとjoinによる関連エンティティ取得</li>
+ * <li>内部結合と外部結合の使い分け</li>
+ * <li>1:1、1:Nの関連パターン</li>
+ * <li>複数表を並べたクロス結合とWHERE句での結合条件指定</li>
+ * </ul>
+ */
 @Service
 public class JpaFromClauseExample {
 

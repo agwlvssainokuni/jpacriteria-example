@@ -28,6 +28,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Hibernate固有のWITH句（CTE: Common Table Expression）機能の使用例を示すクラス。
+ * <p>
+ * このクラスでは以下のHibernate拡張機能を実装しています：
+ * <ul>
+ * <li>WITH RECURSIVEによる再帰的共通テーブル式</li>
+ * <li>連番生成パターン（0-9、0-99、0-999、0-9999）</li>
+ * <li>複数のCTEを組み合わせた複雑な計算</li>
+ * <li>再帰回数制限を超える大量データ生成</li>
+ * </ul>
+ */
 @Service
 public class HibernateWithClauseExample {
 
