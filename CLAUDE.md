@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a JPA Criteria API example project demonstrating various JPA and Hibernate query patterns. The project uses Spring Boot 3.4.6 with Java 21 and includes examples for both standard JPA Criteria queries and Hibernate-specific extensions.
+This is a JPA Criteria API example project demonstrating various JPA and Hibernate query patterns. The project uses Spring Boot 3.5.4 with Java 21 and includes examples for both standard JPA Criteria queries and Hibernate-specific extensions.
 
 ## Build System and Commands
 

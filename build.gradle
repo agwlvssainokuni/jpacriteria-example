@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.springframework.boot' version '3.4.6'
+    id 'org.springframework.boot' version '3.5.4'
 }
 
 java {
@@ -29,7 +29,7 @@ configurations { javaagent }
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.6'
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.5.4'
     }
 }
 
@@ -40,8 +40,8 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-core'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    compileOnly 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -81,8 +81,8 @@ sourceSets {
 dependencies {
     // エンティティからJPAメタモデルを生成するための設定。
     entityCompileOnly 'jakarta.persistence:jakarta.persistence-api'
-    entityCompileOnly 'org.projectlombok:lombok:1.18.34'
-    entityAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    entityCompileOnly 'org.projectlombok:lombok:1.18.38'
+    entityAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
     entityAnnotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
     // JPAメタモデルのJavaソースをコンパイルできるようにする設定。
     // (IntelliJ IDEAのために必要)
