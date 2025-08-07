@@ -95,6 +95,27 @@ docker-compose up -d mysql
 
 この分離により、メタモデル生成でエンティティを最初にコンパイルする必要がある場合のコンパイル問題を防ぎ、循環依存の問題を回避します。
 
+#### Gradle設定の詳細
+
+build.gradleには3つのソースセットが含まれています：
+
+```gradle
+sourceSets {
+    entity                    // JPAエンティティ
+    entitymodel {             // 生成されたJPAメタモデル（IDE サポート用）
+        java {
+            srcDir file('build/generated/sources/annotationProcessor/java/entity')
+        }
+    }
+}
+```
+
+重要なポイント：
+- **エンティティコンパイル**: `hibernate-jpamodelgen`によってメタモデルを生成するために、エンティティを最初にコンパイルする必要があります
+- **IDE互換性**: `entitymodel`ソースセットにより、IntelliJ IDEAが生成されたメタモデルクラスを認識できます
+- **ビルドプロセス**: Gradleは`entitymodel`ソースセットなしでも正常にビルドできますが、IDEでエラーのない開発には必須です
+- **メタモデル生成**: アノテーションプロセッサがエンティティコンパイル時に自動的にメタモデルクラス（例：`Customer_.java`）を生成します
+
 ### 例の実行フロー
 
 1. **PrepareExample**: サンプルデータ（Customer、Product、SalesOrderなど）を設定

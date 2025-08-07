@@ -95,6 +95,27 @@ The project uses a unique Gradle source set configuration to handle JPA metamode
 
 This separation prevents compilation issues where metamodel generation requires entities to compile first, avoiding circular dependency problems.
 
+#### Gradle Configuration Details
+
+The build.gradle includes three source sets:
+
+```gradle
+sourceSets {
+    entity                    // JPA entities
+    entitymodel {             // Generated JPA metamodels (for IDE support)
+        java {
+            srcDir file('build/generated/sources/annotationProcessor/java/entity')
+        }
+    }
+}
+```
+
+Key points:
+- **Entity compilation**: Entities must be compiled first to generate metamodels via `hibernate-jpamodelgen`
+- **IDE compatibility**: The `entitymodel` source set ensures IntelliJ IDEA recognizes generated metamodel classes
+- **Build process**: While Gradle can build successfully without the `entitymodel` source set, it's essential for IDE error-free development
+- **Metamodel generation**: Annotation processor automatically generates metamodel classes (e.g., `Customer_.java`) during entity compilation
+
 ### Example Execution Flow
 
 1. **PrepareExample**: Sets up sample data (Customer, Product, SalesOrder, etc.)
